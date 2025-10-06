@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
-from repositories import TurmaRepository, ProfessorRepository
-from models import Turma
+from app import db
+from models import Turma, Professor
 
 ns = Namespace('turmas', description='Operações com turmas')
 
@@ -16,44 +16,43 @@ turma_model = ns.model('Turma', {
 class TurmaList(Resource):
     @ns.marshal_list_with(turma_model)
     def get(self):
-        return TurmaRepository.get_all()
+        return Turma.query.all()
 
     @ns.expect(turma_model, validate=True)
     @ns.marshal_with(turma_model, code=201)
     def post(self):
-        payload = request.json
-        # valida se o professor existe
-        if not ProfessorRepository.get_by_id(payload.get('professor_id')):
+        data = request.json
+        # valida professor existe
+        if not Professor.query.get(data.get('professor_id')):
             ns.abort(400, 'Professor não encontrado')
-        t = TurmaRepository.create(**payload)
+        t = Turma(descricao=data.get('descricao'), professor_id=data.get('professor_id'), ativo=data.get('ativo', True))
+        db.session.add(t)
+        db.session.commit()
         return t, 201
-
 
 @ns.route('/<int:id>')
 @ns.param('id', 'Identificador da turma')
 class TurmaItem(Resource):
     @ns.marshal_with(turma_model)
     def get(self, id):
-        t = TurmaRepository.get_by_id(id)
-        if not t:
-            ns.abort(404)
+        t = Turma.query.get_or_404(id)
         return t
 
     @ns.expect(turma_model, validate=True)
     @ns.marshal_with(turma_model)
     def put(self, id):
-        t = TurmaRepository.get_by_id(id)
-        if not t:
-            ns.abort(404)
-        payload = request.json
-        if 'professor_id' in payload and not ProfessorRepository.get_by_id(payload.get('professor_id')):
+        t = Turma.query.get_or_404(id)
+        data = request.json
+        if 'professor_id' in data and not Professor.query.get(data.get('professor_id')):
             ns.abort(400, 'Professor não encontrado')
-        t = TurmaRepository.update(t, **payload)
+        t.descricao = data.get('descricao', t.descricao)
+        t.professor_id = data.get('professor_id', t.professor_id)
+        t.ativo = data.get('ativo', t.ativo)
+        db.session.commit()
         return t
 
     def delete(self, id):
-        t = TurmaRepository.get_by_id(id)
-        if not t:
-            ns.abort(404)
-        TurmaRepository.delete(t)
+        t = Turma.query.get_or_404(id)
+        db.session.delete(t)
+        db.session.commit()
         return '', 204
