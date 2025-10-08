@@ -1,4 +1,4 @@
-# 🏫 API de Gestão Escolar — Flask + SQLite + SQLAlchemy + Docker
+# 🏫 API de Gestão Escolar — Flask + SQLite + SQLAlchemy + Docker - 3°ADS NOITE
 
 # INTEGRANTES
 - MURILO LUIZ INÁCIO DE SOUZA – RA 2400933 
