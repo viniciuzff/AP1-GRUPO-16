@@ -1,9 +1,9 @@
 # 🏫 API de Gestão Escolar — Flask + SQLite + SQLAlchemy + Docker
 
 # INTEGRANTES
-MURILO LUIZ INÁCIO DE SOUZA – RA 2400933 
-TULIO DA SILVA COSTA – RA 2302336 
-VINICIUS FERREIRA DE FREITAS – RA 2403865
+- MURILO LUIZ INÁCIO DE SOUZA – RA 2400933 
+- TULIO DA SILVA COSTA – RA 2302336 
+- VINICIUS FERREIRA DE FREITAS – RA 2403865
 
 ## 📘 Descrição
 API REST construída com **Flask**, estruturada no padrão **MVC**, para o **gerenciamento de Professores, Turmas e Alunos**.  
